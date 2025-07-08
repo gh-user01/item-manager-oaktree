@@ -1,6 +1,7 @@
 import sqlite3
 from contextlib import contextmanager
 from flask import current_app
+from werkzeug.security import generate_password_hash
 
 
 def init_db():
@@ -30,6 +31,30 @@ def init_db():
     """)
     
     conn.commit()
+    
+    # Add demo user and sample data if database is empty
+    cursor.execute("SELECT COUNT(*) FROM users")
+    if cursor.fetchone()[0] == 0:
+        # Add demo user
+        demo_password_hash = generate_password_hash('demo123')
+        cursor.execute("""
+            INSERT INTO users (email, password_hash, name)
+            VALUES (?, ?, ?)
+        """, ('demo@example.com', demo_password_hash, 'Demo User'))
+        
+        # Add sample items
+        cursor.execute("""
+            INSERT INTO items (name, description, price)
+            VALUES 
+            ('Sample Laptop', 'A high-performance laptop for work and gaming', 999.99),
+            ('Wireless Headphones', 'Premium noise-cancelling headphones', 299.99),
+            ('Smart Watch', 'Fitness tracking and notifications', 199.99),
+            ('Coffee Maker', 'Automatic drip coffee maker', 89.99),
+            ('Desk Chair', 'Ergonomic office chair', 249.99)
+        """)
+        
+        conn.commit()
+    
     conn.close()
 
 

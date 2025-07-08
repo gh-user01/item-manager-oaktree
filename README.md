@@ -49,7 +49,24 @@ This application demonstrates modern full-stack development practices with a cle
 - **Cloud Deployment**: Designed for Render (backend) and Vercel (frontend)
 - **Environment Variables**: Secrets managed through platform-specific environment variables
 - **Database Persistence**: SQLite file persists in deployed environment
+- **Database Reset**: Database is reset on each deployment (ephemeral storage)
+- **Demo Data**: Default demo user and sample items are created automatically
 - **Monitoring**: Basic health checks for production monitoring
+
+## Important Notes
+
+### Database Behavior
+- **Development**: SQLite database persists between runs
+- **Production**: Database resets on each deployment (ephemeral storage)
+- **Demo Data**: Demo user and sample items are automatically created on each deployment
+- **User Data**: Any user-created data will be lost on redeployment
+
+### Demo Account
+The application automatically creates a demo account for immediate testing:
+- **Email:** demo@example.com
+- **Password:** demo123
+
+This account is recreated on every deployment, ensuring it's always available for testing.
 
 ## Project Structure
 
