@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: item-manager-backend
+    env: python
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && gunicorn run:app
+    rootDir: backend
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://localhost:3000,https://item-manager-frontend.vercel.app
