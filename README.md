@@ -1,20 +1,55 @@
-# Item Manager - Fu   ├── requirements.txt    ├── jest.setup.js       # Jest setup file
-   ├── package.json        # Node.js dependencies
-   ├── tsconfig.json       # TypeScript configuration
-   ├── vercel.json         # Vercel deployment configuration
-   ├── .env.example        # Environment variables template
-   └── .gitignore         # Git ignore file
-├── render.yaml             # Render Blueprint deployment config
-├── .gitignore              # Root git ignore file
-└── README.md               # This fileython dependencies (includes Gunicorn)
-   ├── seed_data.py        # Sample data script
-   ├── pytest.ini         # Pytest configuration
-   ├── Procfile           # Gunicorn configuration for Render
-   ├── runtime.txt        # Python version for Render
-   ├── .env.example       # Environment variables template
-   └── .gitignore         # Git ignore filetack Application
+# Item Manager - Full Stack Application
 
 A complete full-stack web application for managing items with a Flask REST API backend and Next.js frontend. Features robust JWT authentication, comprehensive testing, and modern development practices.
+
+## Overview
+
+This application demonstrates modern full-stack development practices with a clean separation of concerns between frontend and backend. The system allows users to manage items with full CRUD operations, secure authentication, and a responsive user interface.
+
+## Technical Approach
+
+### Architecture Decision
+- **Monorepo Structure**: Both frontend and backend are housed in a single repository for easier development and deployment coordination
+- **Microservices Ready**: Despite being in a monorepo, the services are completely decoupled and can be deployed independently
+- **API-First Design**: Backend exposes a clean REST API that can be consumed by any frontend or mobile application
+
+### Backend Architecture
+- **Flask App Factory Pattern**: Modular design allowing for easy testing and configuration management
+- **Blueprint Organization**: Separate blueprints for authentication and API routes for better code organization
+- **JWT Authentication**: Stateless authentication with refresh tokens for enhanced security
+- **SQLite Database**: Lightweight database for development with easy migration path to PostgreSQL for production
+
+### Frontend Architecture
+- **Next.js App Router**: Modern React framework with file-based routing and server-side capabilities
+- **Route Groups**: Organized routes with `(auth)` and `(dashboard)` groups for better code structure
+- **Context API**: Global state management for authentication without external dependencies
+- **TypeScript**: Full type safety throughout the application
+
+## Key Assumptions
+
+### Development Environment
+- **Python 3.7+**: Modern Python version with async support
+- **Node.js 16+**: Required for Next.js 15 compatibility
+- **SQLite**: Suitable for development and small-scale production
+- **Local Development**: Both services run locally during development
+
+### Security Assumptions
+- **JWT Tokens**: Access tokens expire in 15 minutes, refresh tokens in 7 days
+- **CORS**: Configured for specific domains to prevent unauthorized access
+- **Password Storage**: Passwords are hashed using secure algorithms
+- **HTTPS**: Production deployment assumes HTTPS for secure token transmission
+
+### Data Model Assumptions
+- **Item Structure**: Simple item model with name, description, and price
+- **User Model**: Basic user authentication with email and password
+- **No File Uploads**: Items are text-based only for simplicity
+- **Single User Items**: Each item belongs to the creating user
+
+### Deployment Assumptions
+- **Cloud Deployment**: Designed for Render (backend) and Vercel (frontend)
+- **Environment Variables**: Secrets managed through platform-specific environment variables
+- **Database Persistence**: SQLite file persists in deployed environment
+- **Monitoring**: Basic health checks for production monitoring
 
 ## Project Structure
 
@@ -23,7 +58,7 @@ item-manager-oaktree/
 ├── backend/                 # Flask REST API
 │   ├── app/                # Application factory structure
 │   │   ├── __init__.py     # App factory
-│   │   ├── config.py       # Configuration classes
+│   │   ├── config.py       # Configuration classes (production-ready)
 │   │   ├── api/            # API routes
 │   │   ├── auth/           # Authentication routes
 │   │   ├── models/         # Database models
@@ -31,9 +66,12 @@ item-manager-oaktree/
 │   ├── tests/              # Pytest test suite
 │   ├── venv/               # Virtual environment (created after setup)
 │   ├── run.py              # Application entry point
-│   ├── requirements.txt    # Python dependencies
+│   ├── requirements.txt    # Python dependencies (includes Gunicorn)
 │   ├── seed_data.py        # Sample data script
 │   ├── pytest.ini         # Pytest configuration
+│   ├── Procfile           # Gunicorn configuration for Render
+│   ├── runtime.txt        # Python version for Render
+│   ├── .env.example       # Environment variables template
 │   └── .gitignore         # Git ignore file
 ├── frontend/               # Next.js React application (App Router)
 │   ├── src/                # Source code
@@ -52,10 +90,82 @@ item-manager-oaktree/
 │   ├── jest.setup.js       # Jest setup file
 │   ├── package.json        # Node.js dependencies
 │   ├── tsconfig.json       # TypeScript configuration
+│   ├── .env.example        # Environment variables template
+│   ├── .npmrc              # NPM configuration for peer deps
 │   └── .gitignore         # Git ignore file
+├── render.yaml             # Render Blueprint deployment config
 ├── .gitignore              # Root git ignore file
 └── README.md               # This file
 ```
+
+## Setup Instructions
+
+### Prerequisites
+- Python 3.7+ 
+- Node.js 16+
+- npm or yarn
+- Git
+
+### Complete Setup (Recommended)
+
+1. **Clone the Repository**
+   ```bash
+   git clone <repository-url>
+   cd item-manager-oaktree
+   ```
+
+2. **Backend Setup**
+   ```bash
+   cd backend
+   
+   # Create virtual environment
+   python -m venv venv
+   
+   # Activate virtual environment
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   
+   # Install dependencies
+   pip install -r requirements.txt
+   
+   # Copy environment variables
+   cp .env.example .env
+   
+   # Run the application
+   python run.py
+   ```
+   
+   The API will be running at `http://localhost:8000`
+
+3. **Frontend Setup (New Terminal)**
+   ```bash
+   cd frontend
+   
+   # Install dependencies
+   npm install
+   
+   # Copy environment variables
+   cp .env.example .env.local
+   
+   # Start development server
+   npm run dev
+   ```
+   
+   The web application will be available at `http://localhost:3000`
+
+### Seed Sample Data (Optional)
+
+```bash
+# Make sure you're in the backend directory with virtual environment activated
+cd backend
+python seed_data.py
+```
+
+This creates test accounts:
+- **Email:** john@example.com | **Password:** password123
+- **Email:** jane@example.com | **Password:** password123
 
 ## Features
 
@@ -71,7 +181,7 @@ item-manager-oaktree/
 - ✅ **Production Ready**: Configured for Render deployment with Gunicorn
 
 ### Frontend (Next.js)
-- ✅ **Modern React**: Next.js 15 with App Router and React 19
+- ✅ **Modern React**: Next.js 15 with App Router and React 18
 - ✅ **Route Groups**: Organized auth and dashboard routes
 - ✅ **Authentication**: Complete JWT-based auth with context
 - ✅ **Protected Routes**: Route-level access control
@@ -80,7 +190,7 @@ item-manager-oaktree/
 - ✅ **Form Handling**: Validation and error states
 - ✅ **Testing Suite**: 26 Jest tests covering components, pages, and utilities
 - ✅ **Clean UI**: Intuitive interface with loading states
-- ✅ **Production Ready**: Configured for Vercel deployment with environment variables
+- ✅ **Production Ready**: Configured for Vercel deployment
 
 ### Testing
 - ✅ **Backend Tests**: 10 pytest tests (100% passing)
@@ -88,111 +198,35 @@ item-manager-oaktree/
 - ✅ **Coverage**: All major components and functionality tested
 - ✅ **CI Ready**: Simple test commands for assessment
 
-## Quick Start
-
-### Prerequisites
-- Python 3.7+ 
-- Node.js 16+
-- npm or yarn
-
-### 1. Start the Backend
-
-```bash
-cd backend
-
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the application
-python run.py
-```
-
-The API will be running at `http://localhost:8000`
-
-### 2. Seed Sample Data (Optional)
-
-```bash
-# Make sure you're in the backend directory with virtual environment activated
-cd backend
-# Activate virtual environment if not already active
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-
-# Seed users and sample items
-python seed_data.py
-```
-
-This creates test accounts:
-- **Email:** john@example.com | **Password:** password123
-- **Email:** jane@example.com | **Password:** password123
-
-### 3. Start the Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-The web application will be available at `http://localhost:3000`
-
-## Quick Deployment
-
-### Live Application
-- **Frontend**: [https://your-app.vercel.app](https://your-app.vercel.app) (deployed on Vercel)
-- **Backend API**: [https://your-backend.onrender.com](https://your-backend.onrender.com) (deployed on Render)
-
-### Deployment Commands
-```bash
-# Create a fresh commit for deployment
-git add .
-git commit -m "Update for deployment"
-git push origin main
-
-# Backend automatically deploys to Render
-# Frontend automatically deploys to Vercel
-```
-
 ## API Endpoints
 
 ### Authentication Endpoints
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register a new user |
-| POST | `/api/auth/login` | Login user and get tokens |
-| POST | `/api/auth/refresh` | Refresh access token |
-| DELETE | `/api/auth/logout` | Logout and blacklist token |
-| GET | `/api/auth/me` | Get current user info |
+| Method | Endpoint | Description | Body |
+|--------|----------|-------------|------|
+| POST | `/api/auth/register` | Register a new user | `{email, password, name}` |
+| POST | `/api/auth/login` | Login user and get tokens | `{email, password}` |
+| POST | `/api/auth/refresh` | Refresh access token | Header: `Authorization: Bearer <refresh_token>` |
+| DELETE | `/api/auth/logout` | Logout and blacklist token | Header: `Authorization: Bearer <access_token>` |
+| GET | `/api/auth/me` | Get current user info | Header: `Authorization: Bearer <access_token>` |
 
 ### Item Endpoints
-| Method | Endpoint | Description | Authentication |
-|--------|----------|-------------|----------------|
-| GET | `/api/items` | Get all items | Public |
-| GET | `/api/items/<id>` | Get a specific item | Public |
-| POST | `/api/items` | Create a new item | Required |
-| PUT | `/api/items/<id>` | Update an item | Required |
-| DELETE | `/api/items/<id>` | Delete an item | Required |
+| Method | Endpoint | Description | Authentication | Body |
+|--------|----------|-------------|----------------|------|
+| GET | `/api/items` | Get all items | Required | - |
+| GET | `/api/items/<id>` | Get a specific item | Required | - |
+| POST | `/api/items` | Create a new item | Required | `{name, description, price}` |
+| PUT | `/api/items/<id>` | Update an item | Required | `{name?, description?, price?}` |
+| DELETE | `/api/items/<id>` | Delete an item | Required | - |
 
 ## Frontend Pages
 
-| Route | File | Description |
-|-------|------|-------------|
-| `/` | `app/(dashboard)/page.tsx` | Home page with all items |
-| `/login` | `app/(auth)/login/page.tsx` | User login form |
-| `/signup` | `app/(auth)/signup/page.tsx` | User registration form |
-| `/create-item` | `app/(dashboard)/create-item/page.tsx` | Form to create a new item |
-| `/item/[id]` | `app/(dashboard)/item/[id]/page.tsx` | Item detail with edit/delete options |
+| Route | File | Description | Authentication |
+|-------|------|-------------|----------------|
+| `/` | `app/(dashboard)/page.tsx` | Home page with all items | Required |
+| `/login` | `app/(auth)/login/page.tsx` | User login form | Public |
+| `/signup` | `app/(auth)/signup/page.tsx` | User registration form | Public |
+| `/create-item` | `app/(dashboard)/create-item/page.tsx` | Form to create a new item | Required |
+| `/item/[id]` | `app/(dashboard)/item/[id]/page.tsx` | Item detail with edit/delete | Required |
 
 ## Testing
 
@@ -205,6 +239,9 @@ source venv/bin/activate  # macOS/Linux
 
 # Run tests
 pytest
+
+# Run tests with coverage
+pytest --cov=app
 ```
 
 **Coverage**: 10 tests covering authentication, item CRUD, and error handling
@@ -213,96 +250,61 @@ pytest
 ```bash
 cd frontend
 npm test
+
+# Run tests in watch mode
+npm run test:watch
 ```
 
 **Coverage**: 26 tests covering all components, pages, contexts, and utilities
 
 ## Data Model
 
-Each item contains:
-- `id`: Unique identifier (auto-generated)
-- `name`: Item name (required)
-- `description`: Item description (optional)
-- `price`: Item price in dollars (required, must be positive)
+### User Model
+```python
+{
+    "id": int,          # Auto-generated primary key
+    "email": str,       # Unique email address
+    "password": str,    # Hashed password
+    "name": str,        # User's display name
+    "created_at": str   # ISO timestamp
+}
+```
 
-## Development
+### Item Model
+```python
+{
+    "id": int,          # Auto-generated primary key
+    "name": str,        # Item name (required)
+    "description": str, # Item description (optional)
+    "price": float,     # Item price in dollars (required, > 0)
+    "created_at": str   # ISO timestamp
+}
+```
+
+## Development Workflow
 
 ### Backend Development
-- **App Factory Pattern**: Modular Flask application structure
-- **Blueprint Organization**: Separate auth and API routes
-- **Environment-based Config**: Development, testing, and production configs
-- **Database Models**: Clean ORM-like model classes
-- **Comprehensive Testing**: pytest suite with fixtures and database handling
+1. **Environment Setup**: Virtual environment with all dependencies
+2. **Database**: SQLite file created automatically on first run
+3. **Testing**: Run pytest before committing changes
+4. **Code Style**: Follow PEP 8 guidelines
+5. **Configuration**: Environment-based config for different stages
 
 ### Frontend Development
-- **Next.js 15**: Latest App Router with React 19
-- **Route Groups**: Organized authentication and dashboard routes
-- **TypeScript**: Full type safety with strict configuration
-- **Context API**: Global state management for authentication
-- **Jest Testing**: Comprehensive test suite with Testing Library
-- **Responsive Design**: Mobile-first approach with Tailwind CSS
-
-## Architecture Highlights
-
-### Backend Architecture
-- **Flask App Factory**: Scalable application structure
-- **Blueprint Separation**: Auth and API routes in separate modules
-- **Model Layer**: Database models with validation
-- **JWT Implementation**: Secure token-based authentication
-- **Error Handling**: Consistent error responses
-- **Testing**: Unit and integration tests with pytest
-
-### Frontend Architecture
-- **Route Groups**: `(auth)` and `(dashboard)` for organization
-- **Context Providers**: Authentication state management
-- **Component Structure**: Reusable UI components
-- **API Layer**: Centralized API service with token management
-- **Testing Strategy**: Component, integration, and utility tests
+1. **Environment Setup**: Node.js dependencies with npm/yarn
+2. **Development Server**: Hot reload with Next.js dev server
+3. **Testing**: Jest tests with React Testing Library
+4. **TypeScript**: Strict type checking enabled
+5. **Styling**: Tailwind CSS with responsive design
 
 ## Production Deployment
 
-This application is deployed using:
-- **Backend**: Render (Flask API with Gunicorn)
-- **Frontend**: Vercel (Next.js application)
-
-### Backend Deployment (Render)
-
-The backend is configured for production deployment with:
-- **Gunicorn WSGI server** for production
-- **Secure secret keys** generated for JWT and Flask sessions
-- **CORS configuration** for frontend integration
-- **Health check endpoint** at root (`/`) for monitoring
-- **Production-ready configuration** in `config.py`
-
-#### Deployment Files:
-- `Procfile` - Gunicorn configuration
-- `runtime.txt` - Python version specification
-- `render.yaml` - Render Blueprint configuration (monorepo)
-- `requirements.txt` - Updated with Gunicorn
-
-#### Render Deployment Options:
-1. **Blueprint (Recommended)**: Uses `render.yaml` for automated setup
-2. **Manual Web Service**: Create service manually in Render dashboard
-
-### Frontend Deployment (Vercel)
-
-The frontend is configured for Vercel deployment with:
-- **Monorepo support** - Root directory set to `frontend`
-- **Environment variables** for API configuration
-- **Production build optimization**
-
-#### Deployment Steps:
-1. Connect GitHub repository to Vercel
-2. Set root directory to `frontend`
-3. Configure environment variables
-4. Deploy from your chosen branch
-
-### Post-Deployment Configuration
-
-After both services are deployed:
-1. Update `CORS_ORIGINS` in Render with your Vercel domain
-2. Test the integration between frontend and backend
-3. Monitor health checks and logs
+### Deployment Process
+1. **Push to GitHub**: All changes committed and pushed
+2. **Backend**: Automatically deploys to Render via render.yaml
+3. **Frontend**: Automatically deploys to Vercel
+4. **Environment Variables**: Set in respective platform dashboards
+5. **CORS Configuration**: Update backend CORS_ORIGINS with frontend URL
 
 ## Technologies Used
 
@@ -317,20 +319,49 @@ After both services are deployed:
 
 ### Frontend
 - **Next.js 15** - React framework with App Router
-- **React 19** - UI library
+- **React 18** - UI library
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Utility-first CSS framework
 - **Jest** - Testing framework
 - **Testing Library** - React testing utilities
 - **Native Fetch API** - HTTP client
 
-## Contributing
+## Troubleshooting
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+### Common Issues
+
+1. **Port Already in Use**
+   ```bash
+   # Kill process on port 8000 (backend)
+   npx kill-port 8000
+   
+   # Kill process on port 3000 (frontend)
+   npx kill-port 3000
+   ```
+
+2. **Virtual Environment Issues**
+   ```bash
+   # Recreate virtual environment
+   cd backend
+   rm -rf venv
+   python -m venv venv
+   ```
+
+3. **Database Issues**
+   ```bash
+   # Reset database
+   cd backend
+   rm items.db
+   python run.py  # Creates new database
+   ```
+
+4. **Node Dependencies**
+   ```bash
+   # Clear and reinstall
+   cd frontend
+   rm -rf node_modules package-lock.json
+   npm install
+   ```
 
 ## License
 
