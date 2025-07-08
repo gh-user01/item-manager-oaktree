@@ -51,6 +51,7 @@ This application demonstrates modern full-stack development practices with a cle
 - **Database Persistence**: SQLite file persists in deployed environment
 - **Database Reset**: Database is reset on each deployment (ephemeral storage)
 - **Demo Data**: Default demo user and sample items are created automatically
+- **Free Tier Limitations**: Backend may spin down due to inactivity (50+ second delay on first request)
 - **Monitoring**: Basic health checks for production monitoring
 
 ## Important Notes
@@ -67,6 +68,11 @@ The application automatically creates a demo account for immediate testing:
 - **Password:** demo123
 
 This account is recreated on every deployment, ensuring it's always available for testing.
+
+## Free Tier Limitations
+- **Backend Cold Starts**: On Render's free tier, the backend service spins down after periods of inactivity
+- **Startup Delay**: First request after inactivity may take 50+ seconds to respond
+- **User Experience**: Subsequent requests are fast once the service is warmed up
 
 ## Project Structure
 
@@ -316,12 +322,22 @@ npm run test:watch
 
 ## Production Deployment
 
+### Backend (Render)
+
+**Free Tier Limitations:**
+- Service spins down after 15 minutes of inactivity
+- First request after spin-down may take 50+ seconds
+- Subsequent requests are fast once service is warmed up
+
+### Frontend (Vercel)
+
 ### Deployment Process
 1. **Push to GitHub**: All changes committed and pushed
 2. **Backend**: Automatically deploys to Render via render.yaml
 3. **Frontend**: Automatically deploys to Vercel
 4. **Environment Variables**: Set in respective platform dashboards
 5. **CORS Configuration**: Update backend CORS_ORIGINS with frontend URL
+6. **First Request**: May be slow due to cold start (free tier limitation)
 
 ## Technologies Used
 
