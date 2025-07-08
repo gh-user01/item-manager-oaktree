@@ -6,6 +6,18 @@ A complete full-stack web application for managing items with a Flask REST API b
 
 This application demonstrates modern full-stack development practices with a clean separation of concerns between frontend and backend. The system allows users to manage items with full CRUD operations, secure authentication, and a responsive user interface.
 
+## 🚀 Live Demo
+
+**Try the application now:**
+- **Frontend**: [https://item-manager-oaktree-frontend.vercel.app](https://item-manager-oaktree-frontend.vercel.app)
+- **Backend API**: [https://item-manager-oaktree-backend.onrender.com](https://item-manager-oaktree-backend.onrender.com)
+
+**Demo Account:**
+- **Email:** demo@example.com
+- **Password:** demo123
+
+*Note: First load may take 50+ seconds due to free tier cold start*
+
 ## Technical Approach
 
 ### Architecture Decision
@@ -322,14 +334,24 @@ npm run test:watch
 
 ## Production Deployment
 
-### Backend (Render)
+### Live Application
+- **Frontend**: [https://item-manager-oaktree-frontend.vercel.app](https://item-manager-oaktree-frontend.vercel.app)
+- **Backend API**: [https://item-manager-oaktree-backend.onrender.com](https://item-manager-oaktree-backend.onrender.com)
 
-**Free Tier Limitations:**
-- Service spins down after 15 minutes of inactivity
-- First request after spin-down may take 50+ seconds
-- Subsequent requests are fast once service is warmed up
+### Backend (Render)
+**Environment Variables Required:**
+```bash
+FLASK_ENV=production
+SECRET_KEY=<generate-secure-random-key>
+JWT_SECRET_KEY=<generate-secure-random-key>
+CORS_ORIGINS=https://item-manager-oaktree-frontend.vercel.app
+```
 
 ### Frontend (Vercel)
+**Environment Variables Required:**
+```bash
+NEXT_PUBLIC_API_URL=https://item-manager-oaktree-backend.onrender.com/api
+```
 
 ### Deployment Process
 1. **Push to GitHub**: All changes committed and pushed
