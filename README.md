@@ -1,4 +1,18 @@
-# Item Manager - Full Stack Application
+# Item Manager - Fu   ├── requirements.txt    ├── jest.setup.js       # Jest setup file
+   ├── package.json        # Node.js dependencies
+   ├── tsconfig.json       # TypeScript configuration
+   ├── vercel.json         # Vercel deployment configuration
+   ├── .env.example        # Environment variables template
+   └── .gitignore         # Git ignore file
+├── render.yaml             # Render Blueprint deployment config
+├── .gitignore              # Root git ignore file
+└── README.md               # This fileython dependencies (includes Gunicorn)
+   ├── seed_data.py        # Sample data script
+   ├── pytest.ini         # Pytest configuration
+   ├── Procfile           # Gunicorn configuration for Render
+   ├── runtime.txt        # Python version for Render
+   ├── .env.example       # Environment variables template
+   └── .gitignore         # Git ignore filetack Application
 
 A complete full-stack web application for managing items with a Flask REST API backend and Next.js frontend. Features robust JWT authentication, comprehensive testing, and modern development practices.
 
@@ -54,6 +68,7 @@ item-manager-oaktree/
 - ✅ **CORS Support**: Configured for frontend integration
 - ✅ **Testing Suite**: 10 pytest tests covering all endpoints
 - ✅ **Clean Code**: Well-documented, maintainable structure
+- ✅ **Production Ready**: Configured for Render deployment with Gunicorn
 
 ### Frontend (Next.js)
 - ✅ **Modern React**: Next.js 15 with App Router and React 19
@@ -65,6 +80,7 @@ item-manager-oaktree/
 - ✅ **Form Handling**: Validation and error states
 - ✅ **Testing Suite**: 26 Jest tests covering components, pages, and utilities
 - ✅ **Clean UI**: Intuitive interface with loading states
+- ✅ **Production Ready**: Configured for Vercel deployment with environment variables
 
 ### Testing
 - ✅ **Backend Tests**: 10 pytest tests (100% passing)
@@ -130,6 +146,23 @@ npm run dev
 ```
 
 The web application will be available at `http://localhost:3000`
+
+## Quick Deployment
+
+### Live Application
+- **Frontend**: [https://your-app.vercel.app](https://your-app.vercel.app) (deployed on Vercel)
+- **Backend API**: [https://your-backend.onrender.com](https://your-backend.onrender.com) (deployed on Render)
+
+### Deployment Commands
+```bash
+# Create a fresh commit for deployment
+git add .
+git commit -m "Update for deployment"
+git push origin main
+
+# Backend automatically deploys to Render
+# Frontend automatically deploys to Vercel
+```
 
 ## API Endpoints
 
@@ -228,15 +261,48 @@ Each item contains:
 
 ## Production Deployment
 
-### Backend
-1. Set environment variables for production
-2. Use a production WSGI server like Gunicorn
-3. Consider using PostgreSQL instead of SQLite
+This application is deployed using:
+- **Backend**: Render (Flask API with Gunicorn)
+- **Frontend**: Vercel (Next.js application)
 
-### Frontend
-1. Build the production version: `npm run build`
-2. Start with: `npm start`
-3. Deploy to platforms like Vercel, Netlify, or AWS
+### Backend Deployment (Render)
+
+The backend is configured for production deployment with:
+- **Gunicorn WSGI server** for production
+- **Secure secret keys** generated for JWT and Flask sessions
+- **CORS configuration** for frontend integration
+- **Health check endpoint** at root (`/`) for monitoring
+- **Production-ready configuration** in `config.py`
+
+#### Deployment Files:
+- `Procfile` - Gunicorn configuration
+- `runtime.txt` - Python version specification
+- `render.yaml` - Render Blueprint configuration (monorepo)
+- `requirements.txt` - Updated with Gunicorn
+
+#### Render Deployment Options:
+1. **Blueprint (Recommended)**: Uses `render.yaml` for automated setup
+2. **Manual Web Service**: Create service manually in Render dashboard
+
+### Frontend Deployment (Vercel)
+
+The frontend is configured for Vercel deployment with:
+- **Monorepo support** - Root directory set to `frontend`
+- **Environment variables** for API configuration
+- **Production build optimization**
+
+#### Deployment Steps:
+1. Connect GitHub repository to Vercel
+2. Set root directory to `frontend`
+3. Configure environment variables
+4. Deploy from your chosen branch
+
+### Post-Deployment Configuration
+
+After both services are deployed:
+1. Update `CORS_ORIGINS` in Render with your Vercel domain
+2. Test the integration between frontend and backend
+3. Monitor health checks and logs
 
 ## Technologies Used
 
@@ -247,6 +313,7 @@ Each item contains:
 - **SQLite** - Database with custom ORM layer
 - **pytest** - Testing framework
 - **Python 3.11** - Programming language
+- **Gunicorn** - Production WSGI server
 
 ### Frontend
 - **Next.js 15** - React framework with App Router
