@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Item, apiService } from '../lib/api';
-import ItemCard from '../components/ItemCard';
+import { Item, apiService } from '../../lib/api';
+import ItemCard from '../../components/ItemCard';
 
 export default function Home() {
   const [items, setItems] = useState<Item[]>([]);

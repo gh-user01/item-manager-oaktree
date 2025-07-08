@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Item, apiService, UpdateItemData, CreateItemData } from '../../../lib/api';
-import ItemForm from '../../../components/ItemForm';
+import { Item, apiService, UpdateItemData, CreateItemData } from '../../../../lib/api';
+import ItemForm from '../../../../components/ItemForm';
+import { useAuth } from '../../../../contexts/AuthContext';
 
 interface PageProps {
   params: Promise<{
@@ -20,6 +21,8 @@ export default function ItemDetail({ params }: PageProps) {
   const [editing, setEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const loadData = async () => {
@@ -46,7 +49,7 @@ export default function ItemDetail({ params }: PageProps) {
 
   const handleUpdate = async (data: UpdateItemData) => {
     if (!item) return;
-    
+
     setIsUpdating(true);
     try {
       const updatedItem = await apiService.updateItem(item.id, data);
@@ -65,7 +68,9 @@ export default function ItemDetail({ params }: PageProps) {
   };
 
   const handleDelete = async () => {
-    if (!item || !window.confirm('Are you sure you want to delete this item?')) {
+    if (!item) return;
+
+    if (!window.confirm('Are you sure you want to delete this item?')) {
       return;
     }
 
@@ -78,6 +83,10 @@ export default function ItemDetail({ params }: PageProps) {
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const handleEditClick = () => {
+    setEditing(true);
   };
 
   if (loading) {
@@ -173,10 +182,19 @@ export default function ItemDetail({ params }: PageProps) {
             </div>
           </div>
 
+          {!isAuthenticated && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+              <p className="text-yellow-700 text-sm">
+                Sign in to edit or delete this item.
+              </p>
+            </div>
+          )}
+
           <div className="flex justify-center gap-4">
             <button
-              onClick={() => setEditing(true)}
+              onClick={handleEditClick}
               className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded transition-colors"
+              title={!isAuthenticated ? 'Sign in to edit items' : ''}
             >
               Edit Item
             </button>
@@ -184,6 +202,7 @@ export default function ItemDetail({ params }: PageProps) {
               onClick={handleDelete}
               disabled={isDeleting}
               className="bg-red-500 hover:bg-red-600 disabled:opacity-60 disabled:cursor-not-allowed text-white px-6 py-3 rounded transition-colors"
+              title={!isAuthenticated ? 'Sign in to delete items' : ''}
             >
               {isDeleting ? 'Deleting...' : 'Delete Item'}
             </button>

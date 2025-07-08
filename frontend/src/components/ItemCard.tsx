@@ -1,16 +1,24 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { Item, apiService } from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
 
 interface ItemCardProps {
   item: Item;
   onDelete: (id: number) => void;
+  onAuthRequired?: () => void;
 }
 
-export default function ItemCard({ item, onDelete }: ItemCardProps) {
+export default function ItemCard({ item, onDelete, onAuthRequired }: ItemCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   const handleDelete = async () => {
+    if (!isAuthenticated) {
+      onAuthRequired?.();
+      return;
+    }
+
     if (window.confirm('Are you sure you want to delete this item?')) {
       setIsDeleting(true);
       try {
@@ -38,6 +46,7 @@ export default function ItemCard({ item, onDelete }: ItemCardProps) {
           onClick={handleDelete}
           disabled={isDeleting}
           className="bg-red-500 hover:bg-red-600 disabled:opacity-60 disabled:cursor-not-allowed text-white px-3 py-1.5 text-sm rounded transition-colors"
+          title={!isAuthenticated ? 'Sign in to delete items' : ''}
         >
           {isDeleting ? 'Deleting...' : 'Delete'}
         </button>

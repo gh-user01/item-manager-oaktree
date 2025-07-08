@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { apiService, CreateItemData } from '../../lib/api';
-import ItemForm from '../../components/ItemForm';
+import { apiService, CreateItemData } from '../../../lib/api';
+import ItemForm from '../../../components/ItemForm';
 
 export default function CreateItem() {
   const router = useRouter();
